@@ -10,6 +10,7 @@ import org.tron.common.runtime.vm.program.Storage;
 import org.tron.common.utils.StringUtil;
 import org.tron.core.capsule.AccountCapsule;
 import org.tron.core.capsule.BlockCapsule;
+import org.tron.core.capsule.CodeCapsule;
 import org.tron.core.capsule.ContractCapsule;
 import org.tron.core.capsule.TransactionCapsule;
 import org.tron.core.db.AccountStore;
@@ -181,11 +182,13 @@ public class DepositImpl implements Deposit {
     byte[] code;
     if (parent != null) {
       code = parent.getCode(addr);
+
     } else {
-      if (null == getCodeStore().get(addr)) {
-        code = null;
+      CodeCapsule codeCapsule = getCodeStore().get(addr);
+      if (codeCapsule != null) {
+        code = codeCapsule.getData();
       } else {
-        code = getCodeStore().get(addr).getData();
+        code = null;
       }
     }
     if (code != null) {
